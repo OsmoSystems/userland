@@ -30,6 +30,8 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory.h>
 #include <ctype.h>
 
+#include <wiringPi.h>
+
 #include "interface/vcos/vcos.h"
 
 #include "interface/vmcs_host/vc_vchi_gencmd.h"
@@ -1813,14 +1815,18 @@ void default_camera_control_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
       }
       case MMAL_PARAMETER_CAPTURE_STATUS:
       {
+         wiringPiSetup();
+         pinMode(21, OUTPUT);
          MMAL_PARAMETER_CAPTURE_STATUS_T *status = (MMAL_PARAMETER_CAPTURE_STATUS_T*)param;
          if (status->status == MMAL_PARAM_CAPTURE_STATUS_CAPTURE_STARTED)
          {
-            vcos_log_error("Started capture...");
+            vcos_log_error("Started capture. Setting pin 21 (BCM pin 5) high...");
+            digitalWrite(21, HIGH);
          }
          else if (status->status == MMAL_PARAM_CAPTURE_STATUS_CAPTURE_ENDED)
          {
-            vcos_log_error("Ended capture.");
+            vcos_log_error("Ended capture. Setting pin 21 (BCM pin 5) low...");
+            digitalWrite(21, LOW);
          }
       }
       break;
