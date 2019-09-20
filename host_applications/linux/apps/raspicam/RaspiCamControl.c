@@ -226,6 +226,12 @@ static int cmdline_commands_size = sizeof(cmdline_commands) / sizeof(cmdline_com
 #define zoom_full_16P16 ((unsigned int)(65536 * 0.15))
 #define zoom_increment_16P16 (65536UL / 10)
 
+// We use the wiringPi library to set a GPIO pin to control an LED
+// However, the BCM pin numbers are more widely used, so we define the complementary BCM pin here as well for logging
+// Use `gpio readall` to see the mapping of wiringPi to BCM pin numbers
+#define LED_WIRING_PI_PIN 21
+#define LED_BCM_PIN 5
+
 /**
  * Update the passed in parameter according to the rest of the parameters
  * passed in.
@@ -1816,17 +1822,17 @@ void default_camera_control_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
       case MMAL_PARAMETER_CAPTURE_STATUS:
       {
          wiringPiSetup();
-         pinMode(21, OUTPUT);
+         pinMode(LED_WIRING_PI_PIN, OUTPUT);
          MMAL_PARAMETER_CAPTURE_STATUS_T *status = (MMAL_PARAMETER_CAPTURE_STATUS_T*)param;
          if (status->status == MMAL_PARAM_CAPTURE_STATUS_CAPTURE_STARTED)
          {
-            vcos_log_error("Started capture. Setting pin 21 (BCM pin 5) high...");
-            digitalWrite(21, HIGH);
+            vcos_log_error("Started capture. Setting pin %d (BCM pin %d) -> high", LED_WIRING_PI_PIN, LED_BCM_PIN);
+            digitalWrite(LED_WIRING_PI_PIN, HIGH);
          }
          else if (status->status == MMAL_PARAM_CAPTURE_STATUS_CAPTURE_ENDED)
          {
-            vcos_log_error("Ended capture. Setting pin 21 (BCM pin 5) low...");
-            digitalWrite(21, LOW);
+            vcos_log_error("Ended capture. Setting pin %d (BCM pin %d) -> low", LED_WIRING_PI_PIN, LED_BCM_PIN);
+            digitalWrite(LED_WIRING_PI_PIN, LOW);
          }
       }
       break;
