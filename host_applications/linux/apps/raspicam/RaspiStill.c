@@ -826,6 +826,18 @@ static MMAL_STATUS_T create_camera_component(RASPISTILL_STATE *state)
    video_port = camera->output[MMAL_CAMERA_VIDEO_PORT];
    still_port = camera->output[MMAL_CAMERA_CAPTURE_PORT];
 
+   {
+      MMAL_PARAMETER_CHANGE_EVENT_REQUEST_T change_event_request =
+          {{MMAL_PARAMETER_CHANGE_EVENT_REQUEST, sizeof(MMAL_PARAMETER_CHANGE_EVENT_REQUEST_T)},
+           MMAL_PARAMETER_CAPTURE_STATUS, 1};
+
+      status = mmal_port_parameter_set(camera->control, &change_event_request.hdr);
+      if ( status != MMAL_SUCCESS )
+      {
+         vcos_log_error("No capture status events");
+      }
+   }
+
    // Enable the camera, and tell it its control callback function
    status = mmal_port_enable(camera->control, default_camera_control_callback);
 

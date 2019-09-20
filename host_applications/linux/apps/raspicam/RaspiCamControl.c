@@ -1811,6 +1811,18 @@ void default_camera_control_callback(MMAL_PORT_T *port, MMAL_BUFFER_HEADER_T *bu
                         settings->awb_red_gain.num, settings->awb_red_gain.den,
                         settings->awb_blue_gain.num, settings->awb_blue_gain.den);
       }
+      case MMAL_PARAMETER_CAPTURE_STATUS:
+      {
+         MMAL_PARAMETER_CAPTURE_STATUS_T *status = (MMAL_PARAMETER_CAPTURE_STATUS_T*)param;
+         if (status->status == MMAL_PARAM_CAPTURE_STATUS_CAPTURE_STARTED)
+         {
+            vcos_log_error("Started capture...");
+         }
+         else if (status->status == MMAL_PARAM_CAPTURE_STATUS_CAPTURE_ENDED)
+         {
+            vcos_log_error("Ended capture.");
+         }
+      }
       break;
       }
    }
