@@ -826,6 +826,8 @@ static MMAL_STATUS_T create_camera_component(RASPISTILL_STATE *state)
    video_port = camera->output[MMAL_CAMERA_VIDEO_PORT];
    still_port = camera->output[MMAL_CAMERA_CAPTURE_PORT];
 
+   // Note: this block came from 6by9's snippet in https://www.raspberrypi.org/forums/viewtopic.php?t=165910
+   // We're not entirely sure what it's doing, but removing it causes the capture-triggered LED control to not work
    {
       MMAL_PARAMETER_CHANGE_EVENT_REQUEST_T change_event_request =
           {{MMAL_PARAMETER_CHANGE_EVENT_REQUEST, sizeof(MMAL_PARAMETER_CHANGE_EVENT_REQUEST_T)},
